@@ -1,0 +1,109 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My IoT Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+      color: #495057;
+    }
+
+    #container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #logo {
+      max-width: 100px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #007bff;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    #temperature {
+      font-size: 36px;
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    #footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #6c757d;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+  <div id="container">
+    <img src="https://vihaanelectrix.in/img/logos/ve_logo_cirle.png" alt="Logo" id="logo">
+    <h1>Team Space Iot-app</h1>
+    <p>Monitor the temperature in real-time:</p>
+    <div id="root"></div>
+    <p>Temperature = <span id="temperature"></span></p>
+  </div>
+
+  <div id="footer">
+    <p>&copy; 2023 Team Space. All rights reserved.</p>
+  </div>
+
+  <script>
+    const socket = io('http://192.168.223.249:3001'); // Replace with your Arduino WebSocket server IP
+
+    // Handle connection events for debugging
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
+    });
+
+    // Handle temperature update from server
+    socket.on('temperatureUpdate', (temperature) => {
+      console.log('Received temperature update:', temperature);
+      document.getElementById('temperature').innerText = temperature;
+    });
+
+    // Handle WiFi setup acknowledgment for debugging
+    socket.on('wifiSetupAck', (ack) => {
+      console.log('Received WiFi setup acknowledgment:', ack);
+    });
+
+    // Arduino setup logic (replace with your actual setup code)
+    const ssid = 'Galaxy A21sD889'; // Replace with your WiFi SSID
+    const password = 'potti 123'; // Replace with your WiFi password
+
+    function setupArduino() {
+      console.log('Setting up Arduino...');
+      // Implement your Arduino setup logic here
+      // This might involve sending WiFi credentials to Arduino over Socket.io
+      socket.emit('wifiSetup', { ssid, password });
+    }
+
+    // Call Arduino setup function when the page loads
+    window.onload = () => {
+      setupArduino();
+      console.log('Page loaded. Arduino setup initiated.');
+    };
+  </script>
+</body>
+</html>
