@@ -6,6 +6,8 @@ const userSchema = new Schema({
   username: String,
   password: String,
   // Add more fields as needed
-});// just 
+});
+// just for commiting
+
 
 module.exports = mongoose.model('User', userSchema);
